@@ -1,5 +1,6 @@
 <?php
 	session_start();
+	$_SESSION['id'] = session_id();
 	//echo $_SESSION['username'];
 ?>
 
@@ -54,13 +55,7 @@
 				
 			</div>
 			<?php
-			for($i=0;$i<count($_SESSION); $i++){
-				echo $_SESSION[$i];
-				echo "ничего";
-				echo isset($_SESSION['id']);
-			}
-				
-				if(isset($_SESSION['id'])){
+				if($_SESSION['username']!='admin'){
 			?>
 			<a href="sign_in.html" class="menu-item mt-4 noDecor">
 				<button class="btns ms-5 rounded border-0 mt-2 h-50 inputGroup">
@@ -69,7 +64,7 @@
 			</a>
 
 			<?php
-				}else if($_SESSION['id']==1){
+				}else if($_SESSION['username']=='admin'){
 					//echo "Вы вошли как админ";
 				}
 			?>
@@ -79,15 +74,6 @@
 					<button class="btns ms-5 rounded border-0 h-50 inputGroup">
 						Добавить статью
 					</button>
-				</a>
-				<a href="index.php" class="menu-item noDecor">
-					<button class="btns ms-5 rounded border-0 h-50 inputGroup">
-						Выйти
-					</button>
-					<?php
-					session_destroy();
-					
-					?>
 				</a>
 			</div>
 
@@ -155,48 +141,29 @@
 			</div>
 			<div class="row mt-5 mx-0">
 
-			<?php
-			 $conn = mysqli_connect("127.0.0.1", "root", "", "RPD_osnovi_Java");
-			 $select = "SELECT * FROM lessonText";
-			 $result = mysqli_query($conn, $select);
-			 if(mysqli_num_rows($result)>0){
-                
-                
-				while($row = mysqli_fetch_assoc($result)) {
-					//echo "hey";
-				
-
-			?>
-			<a href="article<?php echo $row['id']?>.php" class="noDecor">			
-				<div class="article col-10 d-flex p-0 mt-5">
-					<div class="col-5 article-image rounded-start">
-						
-					</div>
-					<div class="col-7 rounded-end bg-light">
-						<div class="col-12 d-flex">
-							<img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="col-2 ms-3 mt-3">
-							<div class="ms-3">
-								<p id="longread_author" class="fs-2 ms-2 align-center"><?php echo $row['title']?></p>
-								<p id="name_of_author" class="ms-2"><?php echo $row['author']?></p>
-							</div>
-							
-						</div>
-						
-						<p id="longread_title" class="fs-3 ms-3 mt-3"><?php echo $row['title']?></p>
-						<p id="longread_description" class="fs-4 ms-3 mt-3">Описание</p>
-					</div>
-				</div>
-			</a>	
-			<?php
-				}
-			}
-			?>	
+                <div class="bg-success col-10 p-0 mt-5">
+                    <form action="article_add_php.php" method="post">
+                        <div>
+                            <input name="title" type="text" placeholder="Тема">
+                        </div>
+                        <div>
+                            <input name="author" type="text" placeholder="Автор" value="<?php echo $_SESSION['username']?>">
+                        </div>
+                        <div>
+                            <textarea name="text" type="text" placeholder="Текст"></textarea>
+                        </div>
+                        <input type="submit"  value="Отправить" >
+                    </form>
+                </div>
+			
 			</div>
 
 			
 		</div>
 	</div>
 <script type="text/javascript">
+
+	
 
 </script>
 </body>
