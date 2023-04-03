@@ -1,6 +1,46 @@
 <?php
 	session_start();
-	//echo $_SESSION['username'];
+
+
+	// если пользователь не авторизован
+		if (!isset($_SESSION['user_id'])) {
+			// то проверяем его куки
+			// вдруг там есть логин и пароль к нашему скрипту
+
+			if (isset($_COOKIE['login']) && isset($_COOKIE['password'])) {
+				// если же такие имеются
+				// то пробуем авторизовать пользователя по этим логину и паролю
+				$login = mysql_real_escape_string($_COOKIE['login']);
+				$password = mysql_real_escape_string($_COOKIE['password']);
+
+				// и по аналогии с авторизацией через форму:
+
+				// делаем запрос к БД
+				// и ищем юзера с таким логином и паролем
+
+				$query = "SELECT `id`
+						FROM `loginData`
+						WHERE `login`='{$login}' AND `password`='{$password}'
+						LIMIT 1";
+				$sql = mysql_query($query) or die(mysql_error());
+
+				// если такой пользователь нашелся
+				if (mysql_num_rows($sql) == 1) {
+					// то мы ставим об этом метку в сессии (допустим мы будем ставить ID пользователя)
+
+					$row = mysql_fetch_assoc($sql);
+					$_SESSION['user_id'] = $row['id'];
+
+					// не забываем, что для работы с сессионными данными, у нас в каждом скрипте должно присутствовать session_start();
+				}
+				else {
+					// только мы не будем давай ссылку на форму авторизации
+					// вдруг человек и не хочет был авторизованым
+					// а пришел просто поглядеть на наши страницы как гость
+				}
+			}
+		}
+	
 ?>
 
 
@@ -26,7 +66,7 @@
 				<!-- //logo -->
 				<!-- <h1 class="text-center mb-0">OWL School</h1> -->
 				<a href="index.php">
-					<img src="logo5.png" class="col-12 ms-1">
+					<img src="img/logoRPDsite.svg" class="col-12 ms-1">
 				</a>
 		</div>
 		<div class="col-2 ">
@@ -54,24 +94,8 @@
 				
 			</div>
 			<?php
-			for($i=0;$i<count($_SESSION); $i++){
-				echo $_SESSION[$i];
-				echo "ничего";
-				echo isset($_SESSION['id']);
-			}
+				if($_SESSION['user_id']==1){
 				
-				if(isset($_SESSION['id'])){
-			?>
-			<a href="sign_in.html" class="menu-item mt-4 noDecor">
-				<button class="btns ms-5 rounded border-0 mt-2 h-50 inputGroup">
-					Войти
-				</button>
-			</a>
-
-			<?php
-				}else if($_SESSION['id']==1){
-					//echo "Вы вошли как админ";
-				}
 			?>
 			<div class="">
 				<p>Вы вошли как админ</p>
@@ -85,11 +109,24 @@
 						Выйти
 					</button>
 					<?php
-					session_destroy();
+					$_SESSION['user_id']=0;
 					
 					?>
 				</a>
 			</div>
+			<?php
+				}else {
+					//echo "Вы вошли как админ";
+			?>
+			<a href="sign_in.html" class="menu-item mt-4 noDecor">
+				<button class="btns ms-5 rounded border-0 mt-2 h-50 inputGroup">
+					Войти
+				</button>
+			</a>
+
+			<?php
+				}
+			?>
 
 		</div>
 	</div>
@@ -166,9 +203,9 @@
 					//echo "hey";
 				
 
-			?>
-			<a href="article<?php echo $row['id']?>.php" class="noDecor">			
-				<div class="article col-10 d-flex p-0 mt-5">
+			?>	
+			<div class="article col-10 p-0 mt-5">
+				<a href="article<?php echo $row['id']?>.php" class="noDecor d-flex">		
 					<div class="col-5 article-image rounded-start">
 						
 					</div>
@@ -185,10 +222,11 @@
 						<p id="longread_title" class="fs-3 ms-3 mt-3"><?php echo $row['title']?></p>
 						<p id="longread_description" class="fs-4 ms-3 mt-3">Описание</p>
 					</div>
-				</div>
-			</a>	
+				</a>	
+			</div>
 			<?php
 				}
+				exit;
 			}
 			?>	
 			</div>

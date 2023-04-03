@@ -1,7 +1,50 @@
 <?php
 	session_start();
-	$_SESSION['id'] = session_id();
 	//echo $_SESSION['username'];
+	if($_SESSION['user_id']==1){
+		echo "1";
+	}else{
+
+	// если пользователь не авторизован
+		if (!isset($_SESSION['user_id'])) {
+			// то проверяем его куки
+			// вдруг там есть логин и пароль к нашему скрипту
+
+			if (isset($_COOKIE['login']) && isset($_COOKIE['password'])) {
+				// если же такие имеются
+				// то пробуем авторизовать пользователя по этим логину и паролю
+				$login = mysql_real_escape_string($_COOKIE['login']);
+				$password = mysql_real_escape_string($_COOKIE['password']);
+
+				// и по аналогии с авторизацией через форму:
+
+				// делаем запрос к БД
+				// и ищем юзера с таким логином и паролем
+
+				$query = "SELECT `id`
+						FROM `loginData`
+						WHERE `login`='{$login}' AND `password`='{$password}'
+						LIMIT 1";
+				$sql = mysql_query($query) or die(mysql_error());
+
+				// если такой пользователь нашелся
+				if (mysql_num_rows($sql) == 1) {
+					// то мы ставим об этом метку в сессии (допустим мы будем ставить ID пользователя)
+
+					$row = mysql_fetch_assoc($sql);
+					$_SESSION['user_id'] = $row['id'];
+
+					// не забываем, что для работы с сессионными данными, у нас в каждом скрипте должно присутствовать session_start();
+				}
+				else {
+					// только мы не будем давай ссылку на форму авторизации
+					// вдруг человек и не хочет был авторизованым
+					// а пришел просто поглядеть на наши страницы как гость
+				}
+			}
+		}
+		
+	}
 
 	$conn = mysqli_connect("127.0.0.1" , "root", "", "RPD_osnovi_Java");
 
@@ -24,7 +67,7 @@
 				<!-- //logo -->
 				<!-- <h1 class="text-center mb-0">OWL School</h1> -->
 				<a href="index.php">
-					<img src="logo5.png" class="col-12 ms-1">
+					<img src="img/logoRPDsite.svg" class="col-12 ms-1">
 				</a>
 				
 		</div>
@@ -52,21 +95,8 @@
 				</a>
 			</div>
 			<?php
-				if($_SESSION['username']!='admin'){
-
+				if($_SESSION['user_id']==1){
 				
-
-			?>
-			<a href="sign_in.html" class="menu-item mt-4 noDecor">
-				<button class="btns ms-5 rounded border-0 mt-2 h-50 inputGroup">
-					Войти
-				</button>
-			</a>
-
-			<?php
-				}else if($_SESSION['username']=='admin'){
-					//echo "Вы вошли как админ";
-				}
 			?>
 			<div class="">
 				<p>Вы вошли как админ</p>
@@ -75,7 +105,29 @@
 						Добавить статью
 					</button>
 				</a>
+				<a href="index.php" class="menu-item noDecor">
+					<button class="btns ms-5 rounded border-0 h-50 inputGroup">
+						Выйти
+					</button>
+					<?php
+					$_SESSION['user_id']=0;
+					
+					?>
+				</a>
 			</div>
+			<?php
+				}else {
+					//echo "Вы вошли как админ";
+			?>
+			<a href="sign_in.html" class="menu-item mt-4 noDecor">
+				<button class="btns ms-5 rounded border-0 mt-2 h-50 inputGroup">
+					Войти
+				</button>
+			</a>
+
+			<?php
+				}
+			?>
 		</div>
 	</div>
 	<div class="row  gx-0">

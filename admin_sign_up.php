@@ -5,21 +5,16 @@
 ?>
 <?php
     $conn = mysqli_connect("127.0.0.1", "root", "", "RPD_osnovi_Java");
-    $select = "SELECT * FROM loginData";
+    $select = "SELECT * FROM loginData WHERE login='{$_POST['login']}' AND pass='{$_POST['password']}'  ";
     $result = mysqli_query($conn, $select);
 
 
     $row = mysqli_fetch_assoc($result);
 
-    $login = $_POST['login'];    
-    $pass = $_POST['password'];      
-
-    if($row['login']==$login && $row['pass']==$pass){
-        echo "вы зашли в админ панель";
-        $_SESSION['valid'] = true;
-        $_SESSION['timeout'] = time();
-        $_SESSION['username'] = 'admin';
-        //echo $_SESSION['username'];
+    if(mysqli_num_rows($result)>0){
+        echo "вы зашли в админ панель";  
+        $_SESSION['user_id'] = $row['id'];
+        echo $_SESSION['user_id'];
         header('Location: index.php');
         exit;
     }else{

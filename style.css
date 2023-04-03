@@ -28,7 +28,7 @@ a:hover{
     border-radius: 8px;
 }
 .article-image{
-    background-image: url(https://cdn2.hexlet.io/derivations/image/fill_png/600/400/eyJpZCI6IjU1NmFiOGM2Y2YzZmY2OTljZDc2MDMwMjE1YTYyN2FlLnBuZyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=bf09f2d4c1e2acf5458f65181b9d6ff04c4f07663194e07c6067753e1c5f7586);
+    background-image: url(img/imgRPDsite.svg);
     background-size: 100% 100%;
 }
 p{
