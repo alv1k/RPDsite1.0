@@ -1,8 +1,6 @@
 <?php
 	session_start();
-
-	// если пользователь не авторизован
-		
+	//echo $_SESSION['username'];
 	if (isset($_SESSION['login']) && isset($_SESSION['password'])) {
 		// если же такие имеются
 		// то пробуем авторизовать пользователя по этим логину и паролю
@@ -37,10 +35,7 @@
 			// а пришел просто поглядеть на наши страницы как гость
 		}
 	}
-	
 ?>
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -51,13 +46,6 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body class="">
-
-<?php
-    $conn = mysqli_connect("127.0.0.1", "root", "", "RPD_osnovi_Java");
-    $select = "SELECT * FROM modules";
-    $result = mysqli_query($conn, $select);
-
-?>
 	<div class="row menuBg gx-0">
 		<div class="col-2" >
 				<!-- //logo -->
@@ -65,12 +53,13 @@
 				<a href="index.php">
 					<img src="img/logoRPDsite.svg" class="col-12 ms-1">
 				</a>
+				
 		</div>
 		<div class="col-2 ">
 			
 		</div>
 		<div class="col  d-flex">
-			<div class="col-8 d-flex fs-3 pt-4">
+        <div class="col-8 d-flex fs-3 pt-4">
 				
 				<a href="index.php" class="menu-item  noDecor">
 					<button class="btns rounded border-0 mt-2 h-50 inputGroup">
@@ -129,43 +118,17 @@
 			<?php
 				}
 			?>
-
 		</div>
 	</div>
 	<div class="row  gx-0">
 		<div class="col-2 ps-4 pt-3 menuBg">
 			<div class="mt-2">
 				<h2>Модули</h2>
-
-				<?php
-                if(mysqli_num_rows($result)>0){
-                
-                
-                    while($row = mysqli_fetch_assoc($result)) {
-                        //echo "hey";
-                    
-                ?>
-				<p class="fs-6 border-bottom" id="module_num"> <?php echo $row["moduleID"]?>. <span id="module_name"><?php echo $row["name"]?></span> </p>
-
-                <?php
-                    }
-                }
-                ?>
+				<p id="module">1. Введение</p>
 			</div>
 			<div>
 				<h3>Задания</h3>
-                <?php
-                
-                    while($row = mysqli_fetch_assoc($result)) {
-                        //echo "hey";
-                    
-                ?>
-                <p id="task_num"> <span id="task_name"></span> </p>
-                <?php
-                    }
-                
-                ?>
-				
+				<p id="task">1. Задание</p>
 			</div>
 		</div>
 		<div class="col-2 ">
@@ -183,62 +146,15 @@
 						Авторы
 					</button>
 				</a>
-				
-			</div>
-			<div class="mt-3 input-group fs-5">
-				<input type="" name="" placeholder="Поиск" class="rounded-start col-5 border-0 bg-light inputGroup">
-				<button class="inputGroup rounded-end col-1 border-0">Искать</button>
-				<button class="ms-5 inputGroup rounded col-2 border-0">Написать статью</button>
-				
-				
-			</div>
-			<div class="row mt-5 mx-0">
-
-			<?php
-			 $conn = mysqli_connect("127.0.0.1", "root", "", "RPD_osnovi_Java");
-			 $select = "SELECT * FROM lessonText";
-			 $result = mysqli_query($conn, $select);
-			 if(mysqli_num_rows($result)>0){
-                
-                
-				while($row = mysqli_fetch_assoc($result)) {
-					//echo "hey";
-				
-
-			?>	
-			<div class="article col-10 p-0 mt-5">
-				<a href="article<?php echo $row['id']?>.php" class="noDecor d-flex border rounded">		
-					<div class="col-5 article-image rounded-start">
-						
-					</div>
-					<div class="col-7 rounded-end bg-light">
-						<div class="col-12 d-flex">
-							<img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="col-2 ms-3 mt-3">
-							<div class="ms-3">
-								<p id="longread_author" class="fs-2 ms-2 align-center"><?php echo $row['title']?></p>
-								<p id="name_of_author" class="ms-2"><?php echo $row['author']?></p>
-							</div>
-							
-						</div>
-						
-						<p id="longread_title" class="fs-3 ms-3 mt-3"><?php echo $row['title']?></p>
-						<p id="longread_description" class="fs-4 ms-3 mt-3">Описание</p>
-					</div>
-				</a>	
-			</div>
-			<?php
-				}
-				exit;
-			}
-			?>	
 			</div>
 
 			
+			<div class="review article col-10 p-0 mt-5">
+				<p class="fs-3 ms-3">Об учителе</p>
+			</div>
 		</div>
+			
 	</div>
-<script type="text/javascript">
-	
 
-</script>
 </body>
 </html>

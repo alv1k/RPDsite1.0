@@ -2,46 +2,40 @@
 	session_start();
 	//$_SESSION['id'] = session_id();
 	//echo $_SESSION['username'];
+	if (isset($_SESSION['login']) && isset($_SESSION['password'])) {
+		// если же такие имеются
+		// то пробуем авторизовать пользователя по этим логину и паролю
+		$login = $_SESSION['login'];
+		$password = $_SESSION['password'];
 
+		$conn = mysqli_connect("127.0.0.1", "root", "", "RPD_osnovi_Java");
+		// и по аналогии с авторизацией через форму:
 
-	// если пользователь не авторизован
-		if (!isset($_SESSION['user_id'])) {
-			// то проверяем его куки
-			// вдруг там есть логин и пароль к нашему скрипту
+		// делаем запрос к БД
+		// и ищем юзера с таким логином и паролем
 
-			if (isset($_COOKIE['login']) && isset($_COOKIE['password'])) {
-				// если же такие имеются
-				// то пробуем авторизовать пользователя по этим логину и паролю
-				$login = mysql_real_escape_string($_COOKIE['login']);
-				$password = mysql_real_escape_string($_COOKIE['password']);
+		$query = "SELECT `id`
+				FROM `loginData`
+				WHERE `login`='{$login}' AND `pass`='{$password}'
+				LIMIT 1";
+		$sql = mysqli_query($conn, $query);
 
-				// и по аналогии с авторизацией через форму:
+		// если такой пользователь нашелся
+		if (mysqli_num_rows($sql) == 1) {
+			// то мы ставим об этом метку в сессии (допустим мы будем ставить ID пользователя)
 
-				// делаем запрос к БД
-				// и ищем юзера с таким логином и паролем
-
-				$query = "SELECT `id`
-						FROM `loginData`
-						WHERE `login`='{$login}' AND `password`='{$password}'
-						LIMIT 1";
-				$sql = mysql_query($query) or die(mysql_error());
-
-				// если такой пользователь нашелся
-				if (mysql_num_rows($sql) == 1) {
-					// то мы ставим об этом метку в сессии (допустим мы будем ставить ID пользователя)
-
-					$row = mysql_fetch_assoc($sql);
-					$_SESSION['user_id'] = $row['id'];
-
-					// не забываем, что для работы с сессионными данными, у нас в каждом скрипте должно присутствовать session_start();
-				}
-				else {
-					// только мы не будем давать ссылку на форму авторизации
-					// вдруг человек и не хочет был авторизованым 
-					// а пришел просто поглядеть на наши страницы как гость
-				}
-			}
+			$row = mysqli_fetch_assoc($sql);
+			$_SESSION['user_id'] = $row['id'];
+			$name = 'Администратор';
+			setcookie('my_name',$name,time() + (86400)); // 86400 = 1 день в секундах
+			// не забываем, что для работы с сессионными данными, у нас в каждом скрипте должно присутствовать session_start();
 		}
+		else {
+			// только мы не будем давай ссылку на форму авторизации
+			// вдруг человек и не хочет был авторизованым
+			// а пришел просто поглядеть на наши страницы как гость
+		}
+	}
 	
 ?>
 
@@ -77,47 +71,53 @@
 		<div class="col  d-flex">
 			<div class="col-8 d-flex fs-3 pt-4">
 				
-				<a href="#" class="menu-item  noDecor">
-					<button class="btns rounded border-0 mt-2 h-75 inputGroup">
-						Уроки и модули
+				
+				<a href="index.php" class="menu-item  noDecor">
+					<button class="btns rounded border-0 mt-2 h-50 inputGroup">
+						Лонгриды
 					</button>
 				</a>
 				
 				<a href="reviews.php" class="menu-item  noDecor">
-					<button class="btns ms-5 rounded border-0 mt-2 h-75 inputGroup">
+					<button class="btns ms-5 rounded border-0 mt-2 h-50 inputGroup">
 						Отзывы
 					</button>
 				</a>
-				<a href="#" class="menu-item  noDecor">
-					<button class="btns ms-5 rounded border-0 mt-2 h-75 inputGroup">
+				<a href="about.php" class="menu-item  noDecor">
+					<button class="btns ms-5 rounded border-0 mt-2 h-50 inputGroup">
 						Об учителе
 					</button>
 				</a>
 				
 			</div>
 			<?php
-				if($_SESSION['user_id']==1){
+
+			
+				if( $_COOKIE['my_name'] != '' ){
+					//echo 'Привет, ' . $_COOKIE['my_name'] . '!';
+				
+				
 				
 			?>
-			<div class="">
-				<p>Вы вошли как админ</p>
+			<div class="pt-4">
+				<p class="mt-2">Вы вошли как админ</p>
 				<a href="article_add.php" class="menu-item noDecor">
-					<button class="btns ms-5 rounded border-0 h-50 inputGroup">
+					<button class="btns rounded border-0 h-25 inputGroup col-12">
 						Добавить статью
 					</button>
 				</a>
 				<a href="index.php" class="menu-item noDecor">
-					<button class="btns ms-5 rounded border-0 h-50 inputGroup">
-						Выйти
-					</button>
-					<?php
-					$_SESSION['user_id']=0;
+					<form action="btnCookieKill.php" method="POST">
+						<button name="btnCookieKill" class="btns mt-2 rounded border-0 h-50 inputGroup col-12">
+							Выйти
+						</button>
+					</form>
 					
-					?>
 				</a>
 			</div>
 			<?php
-				}else {
+				}else{
+				echo 'Привет, Гость!';
 					//echo "Вы вошли как админ";
 			?>
 			<a href="sign_in.html" class="menu-item mt-4 noDecor">

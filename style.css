@@ -18,10 +18,6 @@ body{
     background-color: #ffffff;
 }
 
-a:hover{
-    background-color: #e0d6ba;
-    color: black;
-}
 
 .article:hover{
     box-shadow:0 0 5px;

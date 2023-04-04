@@ -15,9 +15,12 @@
         echo "вы зашли в админ панель";  
         $_SESSION['user_id'] = $row['id'];
         echo $_SESSION['user_id'];
+        $name = 'Администратор';
+        setcookie('my_name',$name,time() + (86400)); // 86400 = 1 день в секундах
         header('Location: index.php');
         exit;
     }else{
+
         echo "вы ввели неверный пароль или логин";
 
     }
