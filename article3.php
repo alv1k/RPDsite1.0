@@ -193,13 +193,12 @@
 
 				</div>
 				<h1 class="mt-5">Цикл for</h1>
+				<hik class="go">hik</hik>
 			<?php
 
 				// while(){
 				// 	mysqli_fetch_assoc($result);
 				// }
-				$row = mysqli_fetch_assoc($result);
-				$row = mysqli_fetch_assoc($result);
 				$row = mysqli_fetch_assoc($result);
 				$array_text = explode( '. ', $row['text'] ); 
 				for($i=0;$i<count($array_text); $i++){

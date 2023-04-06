@@ -200,14 +200,15 @@
 			 $result = mysqli_query($conn, $select);
 			 if(mysqli_num_rows($result)>0){
                 
-                
 				while($row = mysqli_fetch_assoc($result)) {
 					//echo "hey";
 				
-
-			?>	
+					print_r($row);
+			?>
+			<form action="article<?php echo $row['id'];    ?>.php"  method="get">	
 			<div class="article col-10 p-0 mt-5">
-				<a href="article<?php echo $row['id']?>.php" class="noDecor d-flex border rounded">		
+				<a href="" class="noDecor d-flex border rounded">		
+				
 					<div class="col-5 article-image rounded-start">
 						
 					</div>
@@ -224,8 +225,10 @@
 						<p id="longread_title" class="fs-3 ms-3 mt-3"><?php echo $row['title']?></p>
 						<p id="longread_description" class="fs-4 ms-3 mt-3">Описание</p>
 					</div>
+					<input type="submit" value="<?php echo $row['id']?>" id="rowID" name="rowID">
 				</a>	
 			</div>
+			</form>
 			<?php
 				}
 				exit;
@@ -236,6 +239,21 @@
 			
 		</div>
 	</div>
+
+	<!-- 
+		низкоуровневое прогр C С++ Rust
+		frontend js 
+		backend php python ruby динамическая е коммерс
+		backend serious java c# строгая(статическая) типизация unix хосты, порта, маршрутизация, не с 0, чудовищная сложность.
+		mobile нативная под конкретн ОС боолее популярная java kotlin android swift apple
+		mobile кроссплатформенная darts react-native
+		gamedev unity-c# казуал мобилки прост графика       unreal-c++ триплЭй качественные игры
+
+
+		javascript/typescript-популярный, web-interface написан на нем бэкенд на nodejs- скорее стартапы
+		java - java enterprice автоматизация международных корпораций банки, нефть, телеком, 
+
+	 -->
 <script type="text/javascript">
 	
 

@@ -1,6 +1,5 @@
 <?php
 	session_start();
-	//$_SESSION['id'] = session_id();
 	//echo $_SESSION['username'];
 	if (isset($_SESSION['login']) && isset($_SESSION['password'])) {
 		// если же такие имеются
@@ -36,10 +35,13 @@
 			// а пришел просто поглядеть на наши страницы как гость
 		}
 	}
+
+	$conn = mysqli_connect("127.0.0.1" , "root", "", "RPD_osnovi_Java");
+
+	$select = "SELECT * FROM lessonText WHERE id={$_SESSION['rowID']}";
+    $result = mysqli_query($conn, $select);
 	
 ?>
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -50,13 +52,6 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body class="">
-
-<?php
-    $conn = mysqli_connect("127.0.0.1", "root", "", "RPD_osnovi_Java");
-    $select = "SELECT * FROM modules";
-    $result = mysqli_query($conn, $select);
-
-?>
 	<div class="row menuBg gx-0">
 		<div class="col-2" >
 				<!-- //logo -->
@@ -64,13 +59,13 @@
 				<a href="index.php">
 					<img src="img/logoRPDsite.svg" class="col-12 ms-1">
 				</a>
+				
 		</div>
 		<div class="col-2 ">
 			
 		</div>
 		<div class="col  d-flex">
-			<div class="col-8 d-flex fs-3 pt-4">
-				
+		<div class="col-8 d-flex fs-3 pt-4">
 				
 				<a href="index.php" class="menu-item  noDecor">
 					<button class="btns rounded border-0 mt-2 h-50 inputGroup">
@@ -129,7 +124,6 @@
 			<?php
 				}
 			?>
-
 		</div>
 	</div>
 	<div class="row  gx-0">
@@ -138,14 +132,17 @@
 				<h2>Модули</h2>
 
 				<?php
-                if(mysqli_num_rows($result)>0){
+				 $conn_m = mysqli_connect("127.0.0.1", "root", "", "RPD_osnovi_Java");
+				 $select_m = "SELECT * FROM modules";
+				 $result_m = mysqli_query($conn_m, $select_m);
+                if(mysqli_num_rows($result_m)>0){
                 
                 
-                    while($row = mysqli_fetch_assoc($result)) {
+                    while($row_m = mysqli_fetch_assoc($result_m)) {
                         //echo "hey";
                     
                 ?>
-				<p class="fs-6 border-bottom" id="module_num"> <?php echo $row["moduleID"]?>. <span id="module_name"><?php echo $row["name"]?></span> </p>
+				<p class="fs-6 border-bottom" id="module_num"> <?php echo $row_m["moduleID"]?>. <span id="module_name"><?php echo $row_m["name"]?></span> </p>
 
                 <?php
                     }
@@ -156,7 +153,7 @@
 				<h3>Задания</h3>
                 <?php
                 
-                    while($row = mysqli_fetch_assoc($result)) {
+                    while($row_m = mysqli_fetch_assoc($result_m)) {
                         //echo "hey";
                     
                 ?>
@@ -183,41 +180,58 @@
 						Авторы
 					</button>
 				</a>
-				
-			</div>
-			<div class="mt-3 input-group fs-5">
-				<input type="" name="" placeholder="Поиск" class="rounded-start col-5 border-0 bg-light inputGroup">
-				<button class="inputGroup rounded-end col-1 border-0">Искать</button>
-				<button class="ms-5 inputGroup rounded col-2 border-0">Написать статью</button>
-				
-				
-			</div>
-			<div class="row mt-5 mx-0">
-
-                <div class=" col-10 p-0 mt-5">
-                    <form action="article_add_php.php" method="post">
-                        <div class="">
-                            <input class="border rounded col-8" name="title" type="text" placeholder="Тема">
-                        </div>
-                        <div class="mt-2">
-                            <input class="border rounded col-8" name="author" type="text" placeholder="Автор" value="<?php echo $_SESSION['username'] ?>">
-                        </div>
-                        <div class="mt-2">
-                            <textarea class="border rounded col-8" name="text" type="text" placeholder="Текст"></textarea>
-                        </div>
-                        <input class="border rounded inputGroup" type="submit"  value="Отправить" >
-                    </form>
-                </div>
-			
 			</div>
 
 			
+			<div class="bg-light col-10 p-3 mt-3">
+				<div class="d-flex">
+					<img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="col-2 ms-3 mt-3">
+					<div class="pt-3 ps-3">
+						<p class="fs-2">Johny</p>
+						<p class="fs-4">10.12.2022</p>						
+					</div>
+
+				</div>
+				<h1 class="mt-5">Цикл for</h1>
+			<?php
+
+				// while(){
+				// 	mysqli_fetch_assoc($result);
+				// }
+				$row = mysqli_fetch_assoc($result);
+				$array_text = explode( '. ', $row['text'] ); 
+				for($i=0;$i<count($array_text); $i++){
+		
+				}
+			?>
+				<p class="">
+					<?php 
+						echo $array_text[0];
+					?>
+				</p>
+				
+
+				
+			</div>
 		</div>
+			
 	</div>
-<script type="text/javascript">
 
-	
-
-</script>
 </body>
 </html>
+
+<!-- 
+взять номер статьи из названия или метода пост
+использовать его для вытягивания инфы из бд (по id)
+взять автора, тему вывести на экран
+взять текст, разделить его по абзацам (найти код энтера или новой строчки для разделителя)
+посчитать сколько строк получилось
+и по цислу строк создать поля тегов p
+в редакторе в интпуте прописать все строчки
+и после каждой строчки доабвить возможность загрузить изображения
+
+картинки должны быть взяты из интернета, в бд хранится только ссылка на них
+есть кнопка сохранить - которая вносит изменения в бд и вносит данные о ссылках картинок
+после нажатия выводится готовый лонгрид
+
+ -->
